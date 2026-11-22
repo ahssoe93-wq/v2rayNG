@@ -19,6 +19,11 @@ object AppConfig {
     // Default subscription ID for ungrouped servers
     const val DEFAULT_SUBSCRIPTION_ID = "__default_subscription__"
 
+    // KHP free subscription: built-in servers so the app connects without a key
+    const val KHP_SUBSCRIPTION_ID = "khp_free_subscription"
+    const val KHP_SUBSCRIPTION_URL = "https://raw.githubusercontent.com/ahssoe93-wq/v2rayNG/khp-rebrand/subscription.txt"
+    const val KHP_SUBSCRIPTION_REMARKS = "KHP Free"
+
     /** Preferences mapped to MMKV storage. */
     const val PREF_SNIFFING_ENABLED = "pref_sniffing_enabled"
     const val PREF_ROUTE_ONLY_ENABLED = "pref_route_only_enabled"

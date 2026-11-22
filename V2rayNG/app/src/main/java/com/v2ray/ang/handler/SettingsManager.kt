@@ -23,6 +23,7 @@ import com.v2ray.ang.handler.MmkvManager.decodeAllServerList
 import com.v2ray.ang.handler.MmkvManager.decodeServerConfig
 import com.v2ray.ang.handler.MmkvManager.decodeSubsList
 import com.v2ray.ang.handler.MmkvManager.decodeSubscription
+import com.v2ray.ang.handler.MmkvManager.decodeSubscriptions
 import com.v2ray.ang.handler.MmkvManager.encodeSubscription
 import com.v2ray.ang.handler.MmkvManager.removeSubscription
 import com.v2ray.ang.util.JsonUtil
@@ -40,6 +41,7 @@ object SettingsManager {
     fun initApp(context: Context) {
         ensureDefaultSettings()
         //ensureDefaultSubscription()
+        ensureKhpSubscription()
         initRoutingRulesets(context)
         migrateServerListToSubscriptions()
         migrateHysteria2PinSHA256()
@@ -602,6 +604,33 @@ object SettingsManager {
             if (subsList.moveItem(subsList.lastIndex, 0)) {
                 MmkvManager.encodeSubsList(subsList)
             }
+        }
+    }
+
+    /**
+     * Ensures the built-in KHP free subscription exists, so the app ships with
+     * servers and connects without the user entering a key. Seeded once; an
+     * existing subscription with the same URL is never duplicated. The
+     * periodic updater fetches it on first launch (a never-updated
+     * subscription starts with no delay). Internal for tests.
+     */
+    internal fun ensureKhpSubscription() {
+        if (decodeSubscriptions().any { it.subscription.url == AppConfig.KHP_SUBSCRIPTION_URL }) {
+            return
+        }
+        val khpSub = SubscriptionItem(
+            remarks = AppConfig.KHP_SUBSCRIPTION_REMARKS,
+            url = AppConfig.KHP_SUBSCRIPTION_URL,
+            enabled = true,
+            autoUpdate = true,
+            updateInterval = 1440,
+        )
+        encodeSubscription(AppConfig.KHP_SUBSCRIPTION_ID, khpSub)
+
+        // Move to the top
+        val subsList = decodeSubsList()
+        if (subsList.moveItem(subsList.lastIndex, 0)) {
+            MmkvManager.encodeSubsList(subsList)
         }
     }
 
