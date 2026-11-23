@@ -5,16 +5,16 @@
 This file applies to the entire repository. Read the applicable scoped guide before editing any
 listed path, including when the agent starts at the repository root:
 
-- Read `V2rayNG/app/src/main/java/com/v2ray/ang/service/AGENTS.md` for
-  `V2rayNG/app/src/main/java/com/v2ray/ang/service/`,
-  `V2rayNG/app/src/test/java/com/v2ray/ang/service/`, and these paths under
-  `V2rayNG/app/src/main/java/com/v2ray/ang/`: `core/CoreServiceManager.kt`,
+- Read `V2rayNG/app/src/main/java/com/khp/v2ray/service/AGENTS.md` for
+  `V2rayNG/app/src/main/java/com/khp/v2ray/service/`,
+  `V2rayNG/app/src/test/java/com/khp/v2ray/service/`, and these paths under
+  `V2rayNG/app/src/main/java/com/khp/v2ray/`: `core/CoreServiceManager.kt`,
   `core/LauncherManager.kt`, `root/`, `contracts/ServiceControl.kt`,
   `contracts/Tun2SocksControl.kt`, `handler/NotificationManager.kt`,
   `helper/MessageHelper.kt`, and `helper/NotificationHelper.kt`.
-- Read `V2rayNG/app/src/main/java/com/v2ray/ang/ui/AGENTS.md` for
-  `V2rayNG/app/src/main/java/com/v2ray/ang/ui/` and
-  `V2rayNG/app/src/test/java/com/v2ray/ang/ui/`.
+- Read `V2rayNG/app/src/main/java/com/khp/v2ray/ui/AGENTS.md` for
+  `V2rayNG/app/src/main/java/com/khp/v2ray/ui/` and
+  `V2rayNG/app/src/test/java/com/khp/v2ray/ui/`.
 
 Follow both guides in scoped paths. A scoped rule overrides a root rule only when they require
 incompatible actions; every other root rule remains active.

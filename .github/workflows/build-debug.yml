@@ -87,7 +87,7 @@ jobs:
         cd ${{ github.workspace }}/V2rayNG
         echo "sdk.dir=${ANDROID_HOME}" > local.properties
         chmod 755 gradlew
-        ./gradlew :app:assemblePlaystoreDebug
+        ./gradlew :app:testPlaystoreDebugUnitTest :app:assemblePlaystoreDebug
 
     - name: Upload Debug APKs
       uses: actions/upload-artifact@v4
