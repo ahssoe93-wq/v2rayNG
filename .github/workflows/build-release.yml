@@ -94,13 +94,23 @@ jobs:
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ${{ github.workspace }}/release.keystore
         ls -l ${{ github.workspace }}/release.keystore
 
-    - name: Validate release keystore
-      # Isolates signing credentials from the assemble step: checks the
-      # keystore loads with KEYSTORE_PASSWORD, the KEY_ALIAS exists, and the
-      # KEY_PASSWORD can actually sign (jarsigner on a throwaway JAR).
+    - name: Check keystore file
+      # Fails if the restored keystore is empty (KEYSTORE_BASE64 missing/bad).
+      run: |
+        ls -l ${{ github.workspace }}/release.keystore
+        file ${{ github.workspace }}/release.keystore
+        test -s ${{ github.workspace }}/release.keystore
+
+    - name: Validate keystore password and alias
+      run: |
+        keytool -list -keystore ${{ github.workspace }}/release.keystore \
+          -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+          -alias "${{ secrets.KEY_ALIAS }}"
+
+    - name: Validate key password
+      # Signs a throwaway JAR: fails if KEY_PASSWORD is wrong for the alias.
       run: |
         KS=${{ github.workspace }}/release.keystore
-        keytool -list -keystore "$KS" -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -alias "${{ secrets.KEY_ALIAS }}"
         mkdir -p /tmp/kscheck && echo hi > /tmp/kscheck/a.txt
         jar cf /tmp/kscheck/test.jar -C /tmp/kscheck a.txt
         jarsigner -keystore "$KS" -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
