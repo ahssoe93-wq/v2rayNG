@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "servers": [
+    {
+      "server": "172.237.89.98",
+      "server_port": 1080,
+      "password": "9334991a6f0641cea4ea75591ad65132",
+      "method": "chacha20-ietf-poly1305",
+      "remarks": "KHP Free SG"
+    },
+    {
+      "server": "104.105.136.111",
+      "server_port": 1080,
+      "password": "f7524f66c020403eacf53f790a665016",
+      "method": "chacha20-ietf-poly1305",
+      "remarks": "KHP Free JP"
+    }
+  ]
+}
