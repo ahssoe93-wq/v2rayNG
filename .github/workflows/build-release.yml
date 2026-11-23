@@ -1,10 +1,16 @@
 name: Build Release APK
 
 # KHP release build: signed with the KHP release keystore (GitHub secrets:
-# KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD). Triggered
-# manually via workflow_dispatch so pushes keep building debug only.
+# KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD).
+# Runs on push when this file changes (registers the workflow so
+# workflow_dispatch works afterwards) and on manual workflow_dispatch.
 
 on:
+  push:
+    branches:
+      - khp-rebrand
+    paths:
+      - '.github/workflows/build-release.yml'
   workflow_dispatch:
 
 permissions:
