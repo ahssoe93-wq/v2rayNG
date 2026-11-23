@@ -104,7 +104,10 @@ jobs:
         cd ${{ github.workspace }}/V2rayNG
         echo "sdk.dir=${ANDROID_HOME}" > local.properties
         chmod 755 gradlew
-        ./gradlew :app:testPlaystoreReleaseUnitTest :app:assemblePlaystoreRelease
+        # AGP 9.5.1 creates no testPlaystoreReleaseUnitTest task (release run
+        # 45102131367 failed on task selection); the debug unit-test task runs
+        # the same shared unit-test sources, so gate the release on it.
+        ./gradlew :app:testPlaystoreDebugUnitTest :app:assemblePlaystoreRelease
 
     - name: Upload Release APKs
       uses: actions/upload-artifact@v4

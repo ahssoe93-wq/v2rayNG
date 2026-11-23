@@ -1,6 +1,5 @@
 package com.khp.v2ray.handler
 
-import com.tencent.mmkv.MMKV
 import com.khp.v2ray.AppConfig
 import com.khp.v2ray.dto.entities.SubscriptionItem
 import com.khp.v2ray.util.JsonUtil
@@ -9,27 +8,14 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.mockStatic
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.reset
-import org.mockito.kotlin.whenever
 
 class SettingsManagerKhpSubscriptionTest {
-    private val mainValues = mutableMapOf<String, String>()
-    private val subValues = mutableMapOf<String, String>()
+    private val mainValues get() = MmkvTestStorage.mainValues
+    private val subValues get() = MmkvTestStorage.subValues
 
     @BeforeEach
     fun prepareStorage() {
-        for ((storage, values) in listOf(main to mainValues, subs to subValues)) {
-            reset(storage)
-            whenever(storage.decodeString(any())).thenAnswer { values[it.getArgument<String>(0)] }
-            whenever(storage.encode(any<String>(), any<String>())).thenAnswer {
-                values[it.getArgument(0)] = it.getArgument(1)
-                true
-            }
-            whenever(storage.allKeys()).thenAnswer { values.keys.toTypedArray() }
-        }
+        MmkvTestStorage.prepareStorage()
     }
 
     @Test
@@ -74,20 +60,10 @@ class SettingsManagerKhpSubscriptionTest {
     }
 
     companion object {
-        private val main: MMKV = mock()
-        private val subs: MMKV = mock()
-        private val settings: MMKV = mock()
-
         @BeforeAll
         @JvmStatic
         fun initializeHandles() {
-            mockStatic(MMKV::class.java).use {
-                it.`when`<MMKV> { MMKV.mmkvWithID("MAIN", MMKV.MULTI_PROCESS_MODE) }.thenReturn(main)
-                it.`when`<MMKV> { MMKV.mmkvWithID("SUB", MMKV.MULTI_PROCESS_MODE) }.thenReturn(subs)
-                it.`when`<MMKV> { MMKV.mmkvWithID("SETTING", MMKV.MULTI_PROCESS_MODE) }.thenReturn(settings)
-                MmkvManager.decodeSubscriptions()
-                MmkvManager.decodeSettingsString("test-initialize")
-            }
+            MmkvTestStorage.initializeHandles()
         }
     }
 }
