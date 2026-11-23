@@ -94,6 +94,20 @@ jobs:
         echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ${{ github.workspace }}/release.keystore
         ls -l ${{ github.workspace }}/release.keystore
 
+    - name: Validate release keystore
+      # Isolates signing credentials from the assemble step: checks the
+      # keystore loads with KEYSTORE_PASSWORD, the KEY_ALIAS exists, and the
+      # KEY_PASSWORD can actually sign (jarsigner on a throwaway JAR).
+      run: |
+        KS=${{ github.workspace }}/release.keystore
+        keytool -list -keystore "$KS" -storepass "${{ secrets.KEYSTORE_PASSWORD }}" -alias "${{ secrets.KEY_ALIAS }}"
+        mkdir -p /tmp/kscheck && echo hi > /tmp/kscheck/a.txt
+        jar cf /tmp/kscheck/test.jar -C /tmp/kscheck a.txt
+        jarsigner -keystore "$KS" -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+          -keypass "${{ secrets.KEY_PASSWORD }}" -signedjar /tmp/kscheck/signed.jar \
+          /tmp/kscheck/test.jar "${{ secrets.KEY_ALIAS }}"
+        jarsigner -verify /tmp/kscheck/signed.jar
+
     - name: Build Release APK
       env:
         KEYSTORE_FILE: ${{ github.workspace }}/release.keystore
