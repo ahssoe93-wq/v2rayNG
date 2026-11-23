@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "servers": [
+    {
+      "server": "sg-telegram-khp25-viber-09773510813.premiumx.giize.com",
+      "server_port": 1080,
+      "password": "9334991a6f0641cea4ea75591ad65132",
+      "method": "chacha20-ietf-poly1305",
+      "remarks": "KHP Free SG"
+    },
+    {
+      "server": "jp-telegram-khp25-viber-09773510813.premiumx.giize.com",
+      "server_port": 1080,
+      "password": "f7524f66c020403eacf53f790a665016",
+      "method": "chacha20-ietf-poly1305",
+      "remarks": "KHP Free JP"
+    }
+  ]
+}
