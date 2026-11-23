@@ -107,7 +107,31 @@ jobs:
         # AGP 9.5.1 creates no testPlaystoreReleaseUnitTest task (release run
         # 45102131367 failed on task selection); the debug unit-test task runs
         # the same shared unit-test sources, so gate the release on it.
-        ./gradlew :app:testPlaystoreDebugUnitTest :app:assemblePlaystoreRelease
+        # Capture the Gradle log: on failure, surface the error into the job
+        # summary (readable via the API) and upload the full log as well.
+        set +e
+        ./gradlew :app:testPlaystoreDebugUnitTest :app:assemblePlaystoreRelease 2>&1 | tee gradle-release.log
+        STATUS=${PIPESTATUS[0]}
+        set -e
+        if [ "$STATUS" -ne 0 ]; then
+          {
+            echo "## Release build failed (exit $STATUS)"
+            echo '```'
+            grep -A 30 'What went wrong' gradle-release.log | head -40 || true
+            echo '```'
+            echo '```'
+            grep -E 'Execution failed|FAILED|error:' gradle-release.log | tail -15 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+        fi
+        exit "$STATUS"
+
+    - name: Upload Gradle log on failure
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: gradle-release-log
+        path: ${{ github.workspace }}/V2rayNG/gradle-release.log
 
     - name: Upload Release APKs
       uses: actions/upload-artifact@v4
